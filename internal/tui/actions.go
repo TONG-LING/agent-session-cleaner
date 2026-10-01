@@ -158,7 +158,9 @@ func (m *Model) sweepOrphans() tea.Cmd {
 	if m.rejectWhileBusy() {
 		return nil
 	}
-	stranded := m.forest.Orphans()
+	// A sweep works on the listing, so the sessions the filter is holding back
+	// are left alone: what cannot be seen here is not destroyed from here.
+	stranded := m.visibleOrphans()
 	if len(stranded) == 0 {
 		m.warn(i18n.NoOrphans, i18n.Args{"what": m.print.T(m.meta.OrphanLabel)})
 		return nil

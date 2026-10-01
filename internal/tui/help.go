@@ -25,6 +25,7 @@ var helpSections = []helpSection{
 		{keys: "↑ ↓ / j k", what: i18n.HelpSelect},
 		{keys: "g / G", what: i18n.HelpTopBottom},
 		{keys: "Tab", what: i18n.HelpFocus},
+		{keys: "f", what: i18n.HelpShowAll, gated: filterAction},
 	}},
 	{name: i18n.HelpSearch, entries: []helpEntry{
 		{keys: "/", what: i18n.HelpSearchFields},

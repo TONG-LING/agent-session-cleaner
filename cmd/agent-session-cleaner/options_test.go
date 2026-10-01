@@ -34,14 +34,14 @@ func TestParse(t *testing.T) {
 		},
 		{
 			name:  "options before the agent",
-			args:  []string{"--claude-home=/tmp/y", "claude"},
-			agent: "claude",
-			homes: map[string]string{"claude": "/tmp/y"},
+			args:  []string{"--pi-home=/tmp/y", "pi"},
+			agent: "pi",
+			homes: map[string]string{"pi": "/tmp/y"},
 		},
 		{
 			name:  "every home at once",
-			args:  []string{"--codex-home", "/a", "--claude-home", "/b", "--opencode-home", "/c", "--pi-home", "/d"},
-			homes: map[string]string{"codex": "/a", "claude": "/b", "opencode": "/c", "pi": "/d"},
+			args:  []string{"--codex-home", "/a", "--pi-home", "/d"},
+			homes: map[string]string{"codex": "/a", "pi": "/d"},
 		},
 		{
 			name:  "a single dash is short form",
@@ -100,7 +100,7 @@ func TestParseRefusals(t *testing.T) {
 		{"a home flag followed by another option", []string{"--codex-home", "--help"}, "needs a value"},
 		{"a help flag with a value", []string{"--help=yes"}, "unknown option"},
 		{"a version flag with a value", []string{"--version=1"}, "unknown option"},
-		{"two agents", []string{"codex", "claude"}, "unexpected argument “claude”"},
+		{"two agents", []string{"codex", "pi"}, "unexpected argument “pi”"},
 	}
 
 	print := i18n.New(i18n.English)
@@ -142,7 +142,7 @@ func TestUsageNamesEveryAgent(t *testing.T) {
 
 	for _, want := range []string{
 		buildinfo.Name, "Usage:", "Options:", "-h, --help", "--version",
-		"--codex-home", "--claude-home", "--opencode-home", "--pi-home",
+		"--codex-home", "--pi-home",
 	} {
 		if !strings.Contains(text, want) {
 			t.Errorf("usage does not mention %q:\n%s", want, text)
@@ -175,7 +175,7 @@ func TestUsageIsTranslated(t *testing.T) {
 func TestRegistryIsComplete(t *testing.T) {
 	t.Parallel()
 
-	if got := strings.Join(ids(), ","); got != "codex,claude,opencode,pi" {
+	if got := strings.Join(ids(), ","); got != "codex,pi" {
 		t.Errorf("ids() = %s", got)
 	}
 	agents := buildAll(map[string]string{"codex": "/tmp/codex"})
@@ -221,24 +221,35 @@ func TestReady(t *testing.T) {
 		if err := os.MkdirAll(home, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		target, _ := build("opencode", map[string]string{"opencode": home})
-		if err := ready(target); !errors.Is(err, agent.ErrUnusableHome) {
+		// No agent shipped here refuses a directory any more, so the refusal is
+		// exercised through the interface that defines it.
+		if err := ready(unusable{home: home}); !errors.Is(err, agent.ErrUnusableHome) {
 			t.Errorf("ready() = %v, want ErrUnusableHome", err)
 		}
 	})
 
 	t.Run("a directory that is fine", func(t *testing.T) {
 		t.Parallel()
-		home := filepath.Join(t.TempDir(), "opencode")
-		if err := os.MkdirAll(home, 0o755); err != nil {
-			t.Fatal(err)
-		}
-		target, _ := build("opencode", map[string]string{"opencode": home})
+		home := t.TempDir()
+		target, _ := build("codex", map[string]string{"codex": home})
 		if err := ready(target); err != nil {
 			t.Errorf("ready() = %v", err)
 		}
 	})
 }
+
+// unusable stands in for an agent whose own command line would refuse the
+// directory it was pointed at.
+type unusable struct {
+	agent.Agent
+	home string
+}
+
+func (u unusable) Meta() agent.Meta { return agent.Meta{Home: u.home, Label: "Unusable"} }
+
+func (unusable) Preflight() error { return agent.ErrUnusableHome }
+
+func (unusable) Writable() bool { return false }
 
 func TestRunPrintsHelpAndVersion(t *testing.T) {
 	t.Parallel()

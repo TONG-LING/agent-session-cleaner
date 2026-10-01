@@ -17,6 +17,7 @@ type reload struct {
 
 type loadedMsg struct {
 	sessions []session.Session
+	counts   map[cacheKey]int
 	err      error
 	request  reload
 }
@@ -46,7 +47,11 @@ func (m *Model) load(request reload) tea.Cmd {
 	target, ctx := m.agent, m.ctx
 	return func() tea.Msg {
 		found, err := target.Discover(ctx)
-		return loadedMsg{sessions: found, err: err, request: request}
+		var counts map[cacheKey]int
+		if len(found) > 0 {
+			counts = countMessages(ctx, target, found)
+		}
+		return loadedMsg{sessions: found, counts: counts, err: err, request: request}
 	}
 }
 
@@ -65,10 +70,12 @@ func (m *Model) loaded(msg loadedMsg) tea.Cmd {
 		m.stale = false
 	}
 
-	// Nothing is ever filtered out: a session you cannot see is one you cannot
-	// decide about, and an archived row already says what it is.
+	// The tree is built from every session, so the parent links and the sweeps
+	// that read them stay honest about what is on disk. The filter decides only
+	// which of those rows the listing shows.
 	m.forest = session.Build(msg.sessions)
-	m.rows = m.forest.Rows()
+	m.counts = msg.counts
+	m.rows = m.visibleRows()
 	m.endMouseSequences()
 	// Whatever has been deleted since the selection was made is no longer
 	// selectable, and would otherwise keep multi-select on with nothing in it.

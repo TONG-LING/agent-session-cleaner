@@ -23,6 +23,7 @@ type fake struct {
 	meta        agent.Meta
 	list        []session.Session
 	talk        map[string][]session.Message
+	talkErr     map[string]error
 	refuse      map[string]error
 	acted       []string
 	readonly    bool
@@ -41,8 +42,9 @@ func newFake(sessions ...session.Session) *fake {
 		},
 		// A copy: deleting from one fake rewrites its listing in place, and
 		// callers routinely build several fakes from one slice of sessions.
-		list: append([]session.Session(nil), sessions...),
-		talk: map[string][]session.Message{},
+		list:    append([]session.Session(nil), sessions...),
+		talk:    map[string][]session.Message{},
+		talkErr: map[string]error{},
 	}
 }
 
@@ -59,6 +61,9 @@ func (f *fake) Discover(context.Context) ([]session.Session, error) {
 func (f *fake) Messages(_ context.Context, s session.Session) ([]session.Message, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
+	if err := f.talkErr[s.ID]; err != nil {
+		return nil, err
+	}
 	return f.talk[s.ID], nil
 }
 
@@ -116,12 +121,38 @@ func (f *archivingFake) Unarchive(_ context.Context, s session.Session) error {
 }
 
 // start builds a model, sizes it and lets its first load settle, so a test
-// begins where a user would.
+// begins where a user would, with the whole listing in view. The filter keys
+// off how much was said in a session, and nothing is ever said in a fixture,
+// so a test about something else would otherwise have to describe a
+// conversation before it could be seen.
 func start(t *testing.T, target agent.Agent) *Model {
 	t.Helper()
 	m := New(t.Context(), target, i18n.New(i18n.English))
+	m.showAll = true
+	return settle(t, m)
+}
+
+// startFiltered is start with the filter left exactly as the interface ships
+// it, for the tests that are about the filter.
+func startFiltered(t *testing.T, target agent.Agent) *Model {
+	t.Helper()
+	return settle(t, New(t.Context(), target, i18n.New(i18n.English)))
+}
+
+// settle sizes a model and lets its first load finish.
+func settle(t *testing.T, m *Model) *Model {
+	t.Helper()
 	drive(t, m, m.Init())
 	drive(t, m, send(t, m, tea.WindowSizeMsg{Width: 120, Height: 30}))
+	return m
+}
+
+// unfiltered is a model with the filter turned off, for a test that builds and
+// drives one itself rather than through [start].
+func unfiltered(t *testing.T, target agent.Agent) *Model {
+	t.Helper()
+	m := New(t.Context(), target, i18n.New(i18n.English))
+	m.showAll = true
 	return m
 }
 

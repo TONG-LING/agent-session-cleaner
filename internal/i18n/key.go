@@ -53,6 +53,7 @@ const (
 	BindingUnarchiveSelected
 	BindingDeleteSelected
 	BindingDanger
+	BindingShowAll
 	BindingSearch
 	BindingReload
 	BindingHelp
@@ -70,6 +71,7 @@ const (
 	HelpSearchFields
 	HelpSearchReverse
 	HelpSearchMatch
+	HelpShowAll
 	HelpManage
 	HelpSelectToggle
 	HelpCopyResumeCommand
@@ -119,6 +121,9 @@ const (
 	BannerSelectedOne
 	BannerSelectedMany
 	BannerDanger
+	BannerHiddenOne
+	BannerHiddenMany
+	BannerFilterOff
 
 	// The conversation pane.
 	NoConversation
@@ -157,6 +162,8 @@ const (
 	SelectedNoneArchived
 	DangerOn
 	DangerOff
+	FilterOn
+	FilterOff
 	CopyingResumeCommand
 	CopyResumeCommandSuccess
 	CopyingCwd
@@ -197,8 +204,6 @@ const (
 	SessionPathUnsafe
 	SidecarDeleteFailed
 	SessionDeleteFailed
-	OpenCodeHomeNotDataDir
-	OpenCodeBadSessionID
 
 	// The command line.
 	CLIDescription
@@ -214,8 +219,6 @@ const (
 	CLIUnexpectedArgument
 	CLIDirectory
 	CLICodexHome
-	CLIClaudeHome
-	CLIOpenCodeHome
 	CLIPiHome
 	CLIVersion
 	CLIHomeUnavailable

@@ -61,6 +61,10 @@ type Model struct {
 	cursor int
 	top    int // first visible row, so the cursor stays on screen
 	picked session.Selection
+	// counts is how many messages each session holds, read alongside the
+	// listing, and showAll turns the filter that uses them off.
+	counts  map[cacheKey]int
+	showAll bool
 
 	focus focusTarget
 	// clicked remembers the last row a click landed on, so a timely second
@@ -299,6 +303,8 @@ func (m *Model) command(a action) tea.Cmd {
 		return m.sweepOrphans()
 	case dangerAction:
 		return m.toggleDanger()
+	case filterAction:
+		return m.toggleFilter()
 	}
 	return nil
 }

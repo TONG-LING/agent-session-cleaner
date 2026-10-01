@@ -20,6 +20,7 @@ const (
 	deleteAction
 	copyResumeCommandAction
 	copyWorkingDirectoryAction
+	filterAction
 	pickAction
 	sweepArchivedAction
 	sweepEmptyAction
@@ -65,6 +66,7 @@ var bindings = []binding{
 	{keys: []string{"E"}, action: sweepEmptyAction, label: i18n.BindingDeleteEmpty},
 	{keys: []string{"O"}, action: sweepOrphansAction, label: i18n.BindingDeleteOrphans},
 	{keys: []string{"!"}, action: dangerAction, label: i18n.BindingDanger},
+	{keys: []string{"f"}, action: filterAction, label: i18n.BindingShowAll},
 	{keys: []string{"/"}, action: searchAction, label: i18n.BindingSearch},
 	{keys: []string{"r"}, action: reloadAction, label: i18n.BindingReload},
 	{keys: []string{"h"}, action: helpAction, label: i18n.BindingHelp},
@@ -92,7 +94,7 @@ var (
 		sweepArchivedAction, sweepEmptyAction, sweepOrphansAction, dangerAction,
 	}
 	footerBottom = []action{
-		pickAction, searchAction, reloadAction, helpAction, quitAction,
+		pickAction, filterAction, searchAction, reloadAction, helpAction, quitAction,
 	}
 )
 
@@ -177,10 +179,14 @@ func (m *Model) useful(a action) bool {
 	case sweepEmptyAction:
 		return m.countIf(func(s session.Session) bool { return s.Noise }) > 0
 	case sweepOrphansAction:
-		return len(m.forest.Orphans()) > 0
+		return len(m.visibleOrphans()) > 0
 	case copyWorkingDirectoryAction:
 		current, ok := m.current()
 		return ok && current.Cwd != ""
+	case filterAction:
+		// Worth offering only when something is being held back, or when it is
+		// the way back from showing everything.
+		return m.showAll || m.hiddenCount() > 0
 	case deleteAction, copyResumeCommandAction, pickAction, searchAction:
 		// Nothing to delete, copy, pick out or search through.
 		return len(m.rows) > 0

@@ -13,9 +13,9 @@
 // Three things differ from the other agents. Pi has no archive, so this agent
 // does not implement [agent.Archiver]. It also has no non-interactive command
 // to delete a session with — its own picker removes the file — so deletion is
-// a filesystem operation, guarded the way Claude Code's is: the file has to
-// still be a regular file inside the configured tree and belong to the
-// session being deleted.
+// a filesystem operation, and the guard is the file itself: it has to still be
+// a regular file inside the configured tree and belong to the session being
+// deleted.
 //
 // And nothing here is ever a side thread. Sub-agents run with --no-session and
 // leave no file behind, so no orphan can arise. A header does record a

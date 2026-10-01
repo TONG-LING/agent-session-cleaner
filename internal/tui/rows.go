@@ -48,11 +48,15 @@ func (m *Model) banner() string {
 		counts = append(counts,
 			m.print.N(i18n.BannerArchivedOne, i18n.BannerArchivedMany, archived))
 	}
-	if stranded := m.forest.Orphans(); m.meta.OrphanLabel != 0 && len(stranded) > 0 {
+	if stranded := m.visibleOrphans(); m.meta.OrphanLabel != 0 && len(stranded) > 0 {
 		counts = append(counts, m.print.N(
 			i18n.BannerOrphansOne, i18n.BannerOrphansMany, len(stranded),
 			i18n.Args{"what": m.print.Label(m.meta.OrphanLabel, len(stranded))},
 		))
+	}
+	if hidden := m.hiddenCount(); hidden > 0 {
+		counts = append(counts,
+			m.print.N(i18n.BannerHiddenOne, i18n.BannerHiddenMany, hidden))
 	}
 	line.Add(strings.Join(counts, " · "), m.theme.Muted)
 
@@ -64,6 +68,8 @@ func (m *Model) banner() string {
 		line.Space(3).Add(m.print.N(
 			i18n.BannerSelectedOne, i18n.BannerSelectedMany, m.picked.Len(),
 		), m.theme.Mode)
+	case m.showAll:
+		line.Space(3).Add(m.print.T(i18n.BannerFilterOff), m.theme.Mode)
 	}
 
 	return line.Render(m.width)

@@ -9,7 +9,6 @@ import (
 	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/haowang02/agent-session-cleaner/internal/i18n"
 	"github.com/haowang02/agent-session-cleaner/internal/session"
 )
 
@@ -58,7 +57,7 @@ func TestASmallConversationIsNeverDrawnTwice(t *testing.T) {
 	f := newFake(session.Session{ID: "abc", Title: "talk"})
 	f.talk["abc"] = []session.Message{{Role: session.Assistant, Text: "a **strong** word"}}
 
-	m := New(t.Context(), f, i18n.New(i18n.English))
+	m := unfiltered(t, f)
 	drive(t, m, m.Init())
 
 	// The very first frame the pane can produce, before anything it hands back
@@ -82,7 +81,7 @@ func TestALargeConversationShowsItsPlainTextFirst(t *testing.T) {
 		t.Fatal("the fixture is not large enough to be deferred")
 	}
 
-	m := New(t.Context(), f, i18n.New(i18n.English))
+	m := unfiltered(t, f)
 	drive(t, m, m.Init())
 
 	cmd := send(t, m, tea.WindowSizeMsg{Width: 120, Height: 30})
@@ -185,7 +184,7 @@ func TestDeferredRendersAreCoalesced(t *testing.T) {
 		Role: session.Assistant,
 		Text: strings.Repeat("a **strong** word\n\n", 1000),
 	}}
-	m := New(t.Context(), f, i18n.New(i18n.English))
+	m := unfiltered(t, f)
 	drive(t, m, m.Init())
 
 	first := send(t, m, tea.WindowSizeMsg{Width: 100, Height: 30})

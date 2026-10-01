@@ -1,6 +1,6 @@
 <div align="center">
   <h1>agent-session-cleaner</h1>
-  <p><strong>在一个终端中浏览、恢复和清理 Codex、Claude Code、OpenCode 与 Pi 的全部会话。</strong></p>
+  <p><strong>在一个终端中浏览、恢复和清理 Codex 与 Pi 的全部会话。</strong></p>
   <p>
     <a href="https://github.com/haowang02/agent-session-cleaner/releases/latest"><img src="https://img.shields.io/github/v/release/haowang02/agent-session-cleaner?label=release" alt="最新版本"></a>
     <a href="https://github.com/haowang02/agent-session-cleaner/actions/workflows/ci.yml"><img src="https://github.com/haowang02/agent-session-cleaner/actions/workflows/ci.yml/badge.svg" alt="CI 状态"></a>
@@ -39,23 +39,17 @@ asc
 
 ```bash
 asc codex
-asc claude
-asc opencode
 asc pi
 ```
 
-默认情况下，Codex 使用 `$CODEX_HOME` 或 `~/.codex`，Claude Code 使用 `$CLAUDE_CONFIG_DIR` 或 `~/.claude`，OpenCode 使用 `$XDG_DATA_HOME/opencode` 或 `~/.local/share/opencode`，Pi 使用 `$PI_CODING_AGENT_DIR` 或 `~/.pi/agent`。在 Windows 上，`~` 表示当前用户的配置文件目录。如需明确指定其他目录：
+默认情况下，Codex 使用 `$CODEX_HOME` 或 `~/.codex`，Pi 使用 `$PI_CODING_AGENT_DIR` 或 `~/.pi/agent`。在 Windows 上，`~` 表示当前用户的配置文件目录。如需明确指定其他目录：
 
 ```bash
 asc --codex-home /path/to/codex
-asc --claude-home /path/to/claude
-asc --opencode-home /path/to/opencode
 asc --pi-home /path/to/pi/agent
 ```
 
-OpenCode 路径必须指向名为 `opencode` 的数据目录本身，而不是它的上级目录；`opencode.db` 存在时会直接位于该目录中。
-
-会话列表和对话预览会直接读取已有数据。修改 Codex 会话和删除 OpenCode 会话需要相应的 CLI；CLI 不可用时，仍可进入该 Agent 的只读浏览模式。Claude Code 和 Pi 的删除操作会直接作用于各自的会话文件。
+会话列表和对话预览会直接读取已有数据。修改 Codex 会话需要 Codex CLI；CLI 不可用时，Codex 仍可进入只读浏览模式。Pi 的删除操作会直接作用于其会话文件。
 
 ### 语言
 
@@ -87,15 +81,21 @@ ASC_LANG=zh-CN asc
 | `a` | 归档当前会话或所有已选会话 | 仅 Codex |
 | `u` | 取消归档当前会话或所有已选会话 | 仅 Codex |
 | `D` | 删除所有已归档会话 | 仅 Codex |
-| `O` | 删除所有孤立的子代理会话 | Codex 和 OpenCode |
-| `E` | 删除所有空会话 | 仅 Claude Code |
+| `O` | 删除所有孤立的子代理会话 | 全部 Agent |
 | `r` | 刷新会话列表 | 全部 Agent |
 | `h` | 按键说明 | 全部 Agent |
 | `!` | 开启或关闭危险模式；删除单个会话时跳过确认 | 全部 Agent |
+| `f` | 显示全部会话，包括很短的 | 全部 Agent |
 | `Esc` | 退出多选模式、关闭危险模式，或清除搜索 | 全部 Agent |
 | `q` | 退出 | 全部 Agent |
 
 按空格键或双击即可选择或取消选择会话。选择一条会话时，它派生的所有子代理会话也会一并选中。当前 Agent 支持的操作会应用到全部已选会话；按 `Esc` 可清除选择。
+
+### 哪些会话会被列出
+
+消息数少于三条的会话不会出现在列表中：一次测试运行，或开了个头就放弃的对话，都不是值得回头再用的东西。顶部横幅会统计被过滤掉的条数，按 `f` 可让它们重新回到屏幕上。
+
+被过滤掉的会话同样不会进入批量清理的范围，因此任何删除都先经过屏幕。对话内容读不出来的会话也会照常列出——不知道里面有什么，和知道它是空的，并不是一回事。
 
 ## 恢复会话
 
@@ -103,8 +103,6 @@ ASC_LANG=zh-CN asc
 
 ```bash
 codex resume <session-id>
-claude --resume <session-id>
-opencode -s <session-id>
 pi --session <session-id>
 ```
 
@@ -117,8 +115,6 @@ pi --session <session-id>
 
 - 删除或归档一条会话时，它派生的子代理会话也会一并处理。
 - Codex 的归档、取消归档和删除操作会交由 Codex CLI 执行。
-- Claude Code 会直接删除会话记录及其相关数据。
-- OpenCode 的删除操作会交由 OpenCode CLI 执行。
 - Pi 会直接删除会话文件。
 - 危险模式（`!`）下，删除单个会话时会跳过确认；批量删除仍会要求确认。
 

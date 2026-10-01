@@ -1,5 +1,5 @@
-// Command agent-session-cleaner browses, resumes and cleans up Codex,
-// Claude Code, OpenCode, and Pi session history.
+// Command agent-session-cleaner browses, resumes and cleans up Codex and Pi
+// session history.
 package main
 
 import (

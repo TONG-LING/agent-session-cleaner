@@ -2,9 +2,7 @@ package main
 
 import (
 	"github.com/haowang02/agent-session-cleaner/internal/agent"
-	"github.com/haowang02/agent-session-cleaner/internal/agent/claude"
 	"github.com/haowang02/agent-session-cleaner/internal/agent/codex"
-	"github.com/haowang02/agent-session-cleaner/internal/agent/opencode"
 	"github.com/haowang02/agent-session-cleaner/internal/agent/pi"
 	"github.com/haowang02/agent-session-cleaner/internal/i18n"
 )
@@ -21,16 +19,6 @@ var known = []struct {
 		id:       codex.ID,
 		homeHelp: i18n.CLICodexHome,
 		build:    func(home string) agent.Agent { return codex.New(home) },
-	},
-	{
-		id:       claude.ID,
-		homeHelp: i18n.CLIClaudeHome,
-		build:    func(home string) agent.Agent { return claude.New(home) },
-	},
-	{
-		id:       opencode.ID,
-		homeHelp: i18n.CLIOpenCodeHome,
-		build:    func(home string) agent.Agent { return opencode.New(home) },
 	},
 	{
 		id:       pi.ID,
