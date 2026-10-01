@@ -81,7 +81,7 @@ ASC_LANG=zh-CN asc
 | `/` | 搜索标题、工作目录、会话 ID 和客户端 | 全部 Agent |
 | `?` | 反向搜索 | 全部 Agent |
 | `n` / `N` | 下一个 / 上一个匹配项 | 全部 Agent |
-| `c` | 复制当前会话的 ID | 全部 Agent |
+| `c` | 复制恢复当前会话的命令 | 全部 Agent |
 | `y` | 复制当前会话的工作目录 | 全部 Agent |
 | `d` | 删除当前会话或所有已选会话 | 全部 Agent |
 | `a` | 归档当前会话或所有已选会话 | 仅 Codex |
@@ -99,7 +99,7 @@ ASC_LANG=zh-CN asc
 
 ## 恢复会话
 
-如需恢复当前会话，按 `c` 复制其 ID，然后将其粘贴到对应 Agent 的命令中：
+如需恢复当前会话，按 `c` 复制恢复它的命令，然后直接粘贴到终端：
 
 ```bash
 codex resume <session-id>
@@ -107,6 +107,8 @@ claude --resume <session-id>
 opencode -s <session-id>
 pi --session <session-id>
 ```
+
+会话自己的 ID 已经填好，复制出来的命令可以直接执行。
 
 ## 删除与归档
 

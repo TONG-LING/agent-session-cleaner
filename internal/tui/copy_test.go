@@ -6,15 +6,27 @@ import (
 	"github.com/haowang02/agent-session-cleaner/internal/session"
 )
 
-func TestCopySessionID(t *testing.T) {
+func TestCopyResumeCommand(t *testing.T) {
 	t.Parallel()
 
 	f := newFake(session.Session{ID: "abc", Title: "work", Cwd: "/work/my app", Archived: true})
 	f.readonly = true
 	m := start(t, f)
-	press(t, m, "c")
+	cmd := send(t, m, keyPress("c"))
+	if cmd == nil {
+		t.Fatal("c produced no copy command")
+	}
+	raw := cmd()
+	msg, ok := raw.(copiedClipboardMsg)
+	if !ok {
+		t.Fatalf("copy command returned %T", raw)
+	}
+	if want := "fake --resume abc"; msg.text != want {
+		t.Errorf("clipboard text = %q, want %q", msg.text, want)
+	}
+	drive(t, m, send(t, m, msg))
 
-	contains(t, m, "Session ID copied to clipboard: abc")
+	contains(t, m, "Resume command copied to clipboard: fake --resume abc")
 }
 
 func TestCopyWorkingDirectory(t *testing.T) {

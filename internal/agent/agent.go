@@ -31,6 +31,10 @@ type Meta struct {
 	// DefaultClient is the client so common for this agent that naming it on
 	// every row would be noise.
 	DefaultClient string
+	// Resume is the command line that continues one of this agent's sessions,
+	// with the session ID left off. The interface appends the ID and nothing
+	// else, so every word here has to stand on its own.
+	Resume []string
 	// EmptyLabel names what the "delete empty sessions" key sweeps. Zero means
 	// this agent cannot have empty sessions, and the key is hidden.
 	EmptyLabel i18n.Key

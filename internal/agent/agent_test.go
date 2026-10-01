@@ -41,6 +41,8 @@ func TestEveryAgentDescribesItself(t *testing.T) {
 				t.Error("no home directory")
 			case meta.DefaultClient == "":
 				t.Error("no default client, so every row would carry a badge")
+			case len(meta.Resume) == 0:
+				t.Error("no command that resumes one of its sessions")
 			case meta.BulkConcurrency < 1:
 				t.Error("a batch could never make progress")
 			case meta.Shortcut == 0:

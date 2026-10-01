@@ -35,6 +35,7 @@ func newFake(sessions ...session.Session) *fake {
 		meta: agent.Meta{
 			ID: "fake", Label: "Fake", Reply: "Fake", Shortcut: 'f',
 			Home: "/tmp/fake", DefaultClient: "cli",
+			Resume:     []string{"fake", "--resume"},
 			EmptyLabel: i18n.EmptySessions, OrphanLabel: i18n.OrphanSessions,
 			BulkConcurrency: 4,
 		},

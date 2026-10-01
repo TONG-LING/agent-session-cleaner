@@ -109,6 +109,9 @@ func (a *Agent) Meta() agent.Meta {
 		// Pi is one program with one way in, so a badge naming it on every row
 		// would say nothing.
 		DefaultClient: "cli",
+		// --session takes a session file or a partial UUID, and the id in the
+		// list is the one pi recorded in the header.
+		Resume: []string{"pi", "--session"},
 		// Pi defers persistence until the session has content, so it leaves no
 		// empty session files for the E sweep to remove.
 		EmptyLabel: 0,

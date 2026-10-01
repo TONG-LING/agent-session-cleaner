@@ -18,7 +18,7 @@ const (
 	archiveAction
 	unarchiveAction
 	deleteAction
-	copySessionIDAction
+	copyResumeCommandAction
 	copyWorkingDirectoryAction
 	pickAction
 	sweepArchivedAction
@@ -56,7 +56,7 @@ var bindings = []binding{
 	{keys: []string{"a"}, action: archiveAction, label: i18n.BindingArchive, picked: i18n.BindingArchiveSelected},
 	{keys: []string{"u"}, action: unarchiveAction, label: i18n.BindingUnarchive, picked: i18n.BindingUnarchiveSelected},
 	{keys: []string{"d"}, action: deleteAction, label: i18n.BindingDelete, picked: i18n.BindingDeleteSelected},
-	{keys: []string{"c"}, action: copySessionIDAction, label: i18n.BindingCopySessionID},
+	{keys: []string{"c"}, action: copyResumeCommandAction, label: i18n.BindingCopyResumeCommand},
 	{keys: []string{"y"}, action: copyWorkingDirectoryAction, label: i18n.BindingCopyCwd},
 	// Shown as the open-box glyph: "space" spelled out is wider than the label
 	// it introduces, and reads as a word rather than a key.
@@ -88,7 +88,7 @@ var bindings = []binding{
 // that clip first are the ones people go looking for.
 var (
 	footerTop = []action{
-		archiveAction, unarchiveAction, deleteAction, copySessionIDAction, copyWorkingDirectoryAction,
+		archiveAction, unarchiveAction, deleteAction, copyResumeCommandAction, copyWorkingDirectoryAction,
 		sweepArchivedAction, sweepEmptyAction, sweepOrphansAction, dangerAction,
 	}
 	footerBottom = []action{
@@ -122,7 +122,7 @@ var needsArchiver = map[action]bool{
 // the keys are about, or it sweeps the whole list, which is a different set
 // from the one on screen.
 var hiddenWhilePicking = map[action]bool{
-	copySessionIDAction:        true,
+	copyResumeCommandAction:    true,
 	copyWorkingDirectoryAction: true,
 	sweepArchivedAction:        true,
 	sweepEmptyAction:           true,
@@ -181,7 +181,7 @@ func (m *Model) useful(a action) bool {
 	case copyWorkingDirectoryAction:
 		current, ok := m.current()
 		return ok && current.Cwd != ""
-	case deleteAction, copySessionIDAction, pickAction, searchAction:
+	case deleteAction, copyResumeCommandAction, pickAction, searchAction:
 		// Nothing to delete, copy, pick out or search through.
 		return len(m.rows) > 0
 	}

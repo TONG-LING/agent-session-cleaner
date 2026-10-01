@@ -125,6 +125,9 @@ func (a *Agent) Meta() agent.Meta {
 		Shortcut:      'o',
 		Home:          a.home,
 		DefaultClient: defaultAgent,
+		// -s, --session takes the session id to continue, which is the id the
+		// list shows.
+		Resume: []string{"opencode", "-s"},
 		// A session row is written when the first message is sent, so an
 		// opened and abandoned session leaves nothing behind to clean up.
 		EmptyLabel: 0,

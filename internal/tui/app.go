@@ -281,8 +281,8 @@ func (m *Model) command(a action) tea.Cmd {
 	case pickAction:
 		m.pick()
 		return nil
-	case copySessionIDAction:
-		return m.copySessionID()
+	case copyResumeCommandAction:
+		return m.copyResumeCommand()
 	case copyWorkingDirectoryAction:
 		return m.copyWorkingDirectory()
 	case archiveAction:

@@ -396,7 +396,7 @@ func TestFooterWrapsRatherThanClipping(t *testing.T) {
 
 	shown := stripped(strings.Join(lines, "\n"))
 	for _, want := range []string{
-		"Archive", "Unarchive", "Delete", "Copy session ID", "Copy working directory",
+		"Archive", "Unarchive", "Delete", "Copy resume command", "Copy working directory",
 		"Delete archived", "Delete empty", "Delete orphans", "Danger mode",
 		"Select sessions", "Search", "Refresh", "Shortcuts", "Quit",
 	} {
@@ -537,7 +537,7 @@ func TestFooterOffersOnlyWhatWouldDoSomething(t *testing.T) {
 		t.Parallel()
 		m := start(t, newFake())
 		for _, gone := range []string{
-			"d Delete", "c Copy session ID", "y Copy working directory",
+			"d Delete", "c Copy resume command", "y Copy working directory",
 			"␣ Select sessions", "/ Search",
 		} {
 			omits(t, m, gone)

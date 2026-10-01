@@ -81,7 +81,7 @@ The footer shows the shortcuts available for the current agent and installation.
 | `/` | Search titles, working directories, session IDs, and clients | All agents |
 | `?` | Search backward | All agents |
 | `n` / `N` | Jump to the next / previous match | All agents |
-| `c` | Copy the current session ID | All agents |
+| `c` | Copy the command that resumes the current session | All agents |
 | `y` | Copy the current session's working directory | All agents |
 | `d` | Delete the current session or selected sessions | All agents |
 | `a` | Archive the current session or selected sessions | Codex only |
@@ -99,7 +99,7 @@ Press Space or double-click to select or deselect a session. Selecting a session
 
 ## Resume a session
 
-To resume the current session, press `c` to copy its ID, then paste it into the corresponding agent command:
+To resume the current session, press `c` to copy the command that continues it, then paste it into a shell:
 
 ```bash
 codex resume <session-id>
@@ -107,6 +107,8 @@ claude --resume <session-id>
 opencode -s <session-id>
 pi --session <session-id>
 ```
+
+The session's own ID is already filled in, so the copied command runs as it stands.
 
 ## Deletion and archiving
 

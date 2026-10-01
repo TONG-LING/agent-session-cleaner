@@ -91,7 +91,7 @@ func TestHelpAndFooterAgree(t *testing.T) {
 		{pickAction, i18n.HelpSelectToggle},
 		{dangerAction, i18n.HelpDanger},
 		{deleteAction, i18n.HelpDelete},
-		{copySessionIDAction, i18n.HelpCopySessionID},
+		{copyResumeCommandAction, i18n.HelpCopyResumeCommand},
 		{copyWorkingDirectoryAction, i18n.HelpCopyCwd},
 	}
 

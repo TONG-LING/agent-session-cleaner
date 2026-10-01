@@ -92,6 +92,7 @@ func (a *Agent) Meta() agent.Meta {
 		Shortcut:      'c',
 		Home:          a.home,
 		DefaultClient: "cli",
+		Resume:        []string{"claude", "--resume"},
 		EmptyLabel:    i18n.EmptySessions,
 		// Sub-agent transcripts live inside the parent's sidecar directory and
 		// are removed along with it, so a stranded one cannot arise.

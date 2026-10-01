@@ -2,6 +2,8 @@ package tui
 
 import (
 	"context"
+	"slices"
+	"strings"
 
 	tea "charm.land/bubbletea/v2"
 
@@ -185,19 +187,26 @@ func (m *Model) cascadeNote(extra int) string {
 	return m.print.N(i18n.CascadeOrphansOne, i18n.CascadeOrphansMany, extra)
 }
 
-func (m *Model) copySessionID() tea.Cmd {
+func (m *Model) copyResumeCommand() tea.Cmd {
 	current, ok := m.current()
 	if !ok {
 		m.supersedeCopy()
 		m.warn(i18n.NoCurrentSession)
 		return nil
 	}
+	command := m.resumeCommand(current)
 	return m.copyToClipboard(
-		current.ID,
-		i18n.CopyingSessionID,
-		i18n.CopySessionIDSuccess,
-		i18n.Args{"session_id": current.ID},
+		command,
+		i18n.CopyingResumeCommand,
+		i18n.CopyResumeCommandSuccess,
+		i18n.Args{"command": command},
 	)
+}
+
+// resumeCommand is the command line that continues this session: the agent's
+// own words, then the id it answers to.
+func (m *Model) resumeCommand(s session.Session) string {
+	return strings.Join(append(slices.Clone(m.meta.Resume), s.ID), " ")
 }
 
 func (m *Model) copyWorkingDirectory() tea.Cmd {

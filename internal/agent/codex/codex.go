@@ -119,6 +119,9 @@ func (a *Agent) Meta() agent.Meta {
 		Shortcut:      'x',
 		Home:          a.home,
 		DefaultClient: "cli",
+		// A UUID or a name is what `codex resume` takes, and it is the same id
+		// the list shows.
+		Resume: []string{"codex", "resume"},
 		// A session row exists from the moment a rollout is written, but an
 		// abandoned one is indistinguishable from a short conversation here.
 		EmptyLabel: 0,

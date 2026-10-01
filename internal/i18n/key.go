@@ -42,7 +42,7 @@ const (
 	BindingArchive
 	BindingUnarchive
 	BindingDelete
-	BindingCopySessionID
+	BindingCopyResumeCommand
 	BindingCopyCwd
 	BindingDeleteArchived
 	BindingDeleteEmpty
@@ -72,7 +72,7 @@ const (
 	HelpSearchMatch
 	HelpManage
 	HelpSelectToggle
-	HelpCopySessionID
+	HelpCopyResumeCommand
 	HelpCopyCwd
 	HelpDelete
 	HelpArchive
@@ -157,8 +157,8 @@ const (
 	SelectedNoneArchived
 	DangerOn
 	DangerOff
-	CopyingSessionID
-	CopySessionIDSuccess
+	CopyingResumeCommand
+	CopyResumeCommandSuccess
 	CopyingCwd
 	CopyCwdSuccess
 	MissingCLIBrowse
